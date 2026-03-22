@@ -1,0 +1,70 @@
+<template>
+  <!--<div :class="dark ? 'bg-gray-900 min-h-screen' : 'bg-gradient-to-br from-blue-500 to-purple-600 min-h-screen'"
+       class="flex items-center justify-center p-6">-->
+    <div :class="dark ? 'bg-gray-900 min-h-screen' : 'animated-gradient min-h-screen flex items-center justify-center p-6'">
+
+    <div :class="dark ? 'bg-gray-800 text-white' : 'bg-white/90'"
+         class="p-8 rounded-2xl shadow-2xl w-full max-w-md">
+
+      <!-- Header -->
+      <Header :dark="dark" @toggle-dark="toggleDark" />
+
+      <!-- Input + Bottone -->
+      <InputBox :dark="dark" @aggiungi="aggiungi" />
+
+      <!-- Lista Todo -->
+      <TodoList :lista="lista" :dark="dark" @rimuovi="rimuovi" />
+
+    </div>
+  </div>
+</template>
+
+  <input 
+      v-model="testo"
+      placeholder="Scrivi qualcosa..."
+      :class="dark 
+        ? 'w-full p-3 rounded-xl border mb-4 bg-gray-700 text-white' 
+        : 'w-full p-3 rounded-xl border mb-4 bg-white text-black'"
+    />
+
+    <button 
+      @click="invia"
+      class="w-full bg-blue-500 text-white py-3 rounded-xl hover:bg-blue-600 transition"
+    >
+      Aggiungi
+    </button>
+    
+        <li 
+      v-for="(item, index) in lista" 
+      :key="item + index"
+      class="p-3 rounded-xl flex justify-between items-center transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+      :class="dark ? 'bg-gray-700 text-white' : 'bg-white shadow'"
+    >
+      <span>{{ item }}</span>
+      <button @click="$emit('rimuovi', index)" class="text-red-400 hover:scale-110 transition-transform">✖</button>
+    </li>
+    
+     <div class="p-6">
+      <router-view />
+    </div>
+    
+     <transition-group name="list" tag="ul" class="mt-6 space-y-3">
+    <li 
+  v-for="(item, index) in lista" 
+  :key="item + index"
+  class="p-3 rounded-xl flex justify-between items-center transform transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
+  :class="dark ? 'bg-gray-700 text-white' : 'bg-white shadow'"
+>
+  <span>{{ item }}</span>
+  <button @click="$emit('rimuovi', index)" class="text-red-400 hover:scale-110 transition-transform">✖</button>
+</li>
+  </transition-group>
+  
+     <!-- Mobile Menu -->
+    <transition name="fade">
+      <ul v-if="menuOpen" class="md:hidden bg-white shadow-lg p-4 flex flex-col gap-4">
+        <li><router-link to="/" @click="menuOpen=false" class="text-gray-700 hover:text-blue-500">Home</router-link></li>
+        <li><router-link to="/about" @click="menuOpen=false" class="text-gray-700 hover:text-blue-500">About</router-link></li>
+        <li><router-link to="/contatti" @click="menuOpen=false" class="text-gray-700 hover:text-blue-500">Contatti</router-link></li>
+      </ul>
+    </transition>
